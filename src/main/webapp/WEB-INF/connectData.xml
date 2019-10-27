@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+
+	<context:component-scan base-package="nhom3.candidate.controller" />
+	<mvc:annotation-driven />
+
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+	<bean id="dataSource"
+     class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+     <property name="driverClassName" value="net.sourceforge.jtds.jdbc.Driver" />
+     <property name="url" value="jdbc:jtds:sqlserver://localhost:1433/candidate;instance=SQLEXPRESS" />
+     <property name="username" value="sa" />
+     <property name="password" value="123456" />
+ 	</bean>
+	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		  destroy-method="close">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+		<property name="url" value="jdbc:mysql://localhost:3306/contentsmanagement"/>
+		<property name="username" value="root"/>
+		<property name="password" value="thien"/>
+	</bean> -->
+
+
+
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="packagesToScan" value="nhom3.candidate.model" />
+		<property name="hibernateProperties" value="classpath:hibernate.properties" />
+		
+		<property name="annotatedClasses">
+          <list>
+              <value>nhom3.candidate.model.Admin</value>
+              <value>nhom3.candidate.model.Role</value>
+              <value>nhom3.candidate.model.Campuslink</value>
+              <value>nhom3.candidate.model.Candidate</value>
+              <value>nhom3.candidate.model.Faculty</value>
+              <value>nhom3.candidate.model.University</value>
+              <value>nhom3.candidate.model.Sub_subject_type</value>
+              <value>nhom3.candidate.model.Information_update</value>
+              <value>nhom3.candidate.model.Event</value>
+              
+          </list>
+      </property>
+		
+	</bean>
+
+	<bean id="loginDAO" class="nhom3.candidate.DAOimpl.loginDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="candidateDAO" class="nhom3.candidate.DAOimpl.CandidateDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="facultyDAO" class="nhom3.candidate.DAOimpl.facultyDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="universityDAO" class="nhom3.candidate.DAOimpl.universityDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="campuslinkDAO" class="nhom3.candidate.DAOimpl.campuslinkDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="eventDAO" class="nhom3.candidate.DAOimpl.eventDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	<bean id="subtypeDAO" class="nhom3.candidate.DAOimpl.subDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="chartDAO" class="nhom3.candidate.DAOimpl.chartDAOimpl">
+	     <property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	 
+	<tx:annotation-driven transaction-manager="transactionManager" />
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	
+	
+	
+	<mvc:resources mapping="/resources/**" location="/resources/"  
+	cache-period="31556926"/>
+	
+	<bean class="org.springframework.web.multipart.commons.CommonsMultipartResolver" id="multipartResolver">
+		<property name="maxUploadSize" value="1000000000"/>
+	</bean>
+	
+	
+</beans>
